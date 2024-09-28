@@ -3,6 +3,7 @@ package main
 import (
 	"backend/config"
 	"backend/internal/delivery/docs"
+	"backend/internal/delivery/routing"
 	"backend/pkg/database"
 	"backend/pkg/log"
 	"fmt"
@@ -26,6 +27,9 @@ func main() {
 
 	_ = database.GetDB()
 	logger.Info().Msg("Database Initialized")
+
+	routing.InitRouting(router)
+	logger.Info().Msg("Routing Initialized")
 
 	docs.SwaggerInfo.BasePath = "/"
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
