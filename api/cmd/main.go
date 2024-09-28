@@ -39,7 +39,10 @@ func main() {
 	_ = database.GetDB()
 	logger.Info().Msg("Database Initialized")
 
-	routing.InitRouting(router)
+	session := database.InitRedisSession()
+	logger.Info().Msg("Session Initialized")
+
+	routing.InitRouting(router, session)
 	logger.Info().Msg("Routing Initialized")
 
 	docs.SwaggerInfo.BasePath = "/"

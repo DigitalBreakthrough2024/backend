@@ -2,16 +2,22 @@ package handlers
 
 import (
 	"backend/internal/models/dto"
+	"backend/pkg/database"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"net/http"
 	"time"
 )
 
-type VideoHandler struct{}
+type VideoHandler struct {
+	session database.Session
+}
 
-func InitVideoHandler() VideoHandler {
-	return VideoHandler{}
+func InitVideoHandler(session database.Session) VideoHandler {
+	return VideoHandler{
+		session: session,
+	}
 }
 
 // GetVideosForUser
@@ -23,6 +29,12 @@ func InitVideoHandler() VideoHandler {
 // @Success 200 {array} dto.Video "List of videos"
 // @Router /api/videos [get]
 func (v VideoHandler) GetVideosForUser(c *gin.Context) {
+	sessionID, err := c.Cookie("session_id")
+	if err != nil || sessionID == "" {
+		sessionID = uuid.New().String()
+		c.SetCookie("session_id", sessionID, 3600, "/", "", false, true)
+	}
+
 	// Замоканные данные о видео
 	videos := []dto.Video{
 		{ID: "1", Name: "Video 1", Category: "Category 1", Date: parseDate("2024-01-01"), Duration: 120},
@@ -35,6 +47,15 @@ func (v VideoHandler) GetVideosForUser(c *gin.Context) {
 		{ID: "8", Name: "Video 8", Category: "Category 8", Date: parseDate("2024-01-08"), Duration: 330},
 		{ID: "9", Name: "Video 9", Category: "Category 9", Date: parseDate("2024-01-09"), Duration: 360},
 		{ID: "10", Name: "Video 10", Category: "Category 10", Date: parseDate("2024-01-10"), Duration: 390},
+	}
+
+	err = v.session.Set(c.Request.Context(), sessionID, database.SessionData{
+		Vector:  make([]float32, 624),
+		Watched: make([]string, 0),
+	})
+	if err != nil {
+		c.Status(http.StatusInternalServerError)
+		return
 	}
 
 	c.JSON(http.StatusOK, videos)

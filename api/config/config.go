@@ -14,6 +14,11 @@ const (
 	DBPort         = "DB_PORT"
 	DBHost         = "DB_HOST"
 	DBResponseTime = "DB_RESPONSE_TIME"
+
+	SessionPassword = "SESSION_PASSWORD"
+	SessionHost     = "SESSION_HOST"
+	SessionPort     = "SESSION_PORT"
+	SessionSaveTime = "SESSION_SAVE_TIME"
 )
 
 func InitConfig() {
