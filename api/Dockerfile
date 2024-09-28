@@ -11,7 +11,7 @@ COPY go.mod go.sum ./
 RUN go mod download
 
 # Копируем исходный код проекта в рабочую дирректорию
-COPY . .
+COPY .. .
 
 # Сборка приложения
 RUN go build -o ./cmd/main ./cmd/main.go

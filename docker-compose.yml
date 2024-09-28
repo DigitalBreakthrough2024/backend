@@ -1,7 +1,7 @@
 services:
   app:
     build:
-      context: .
+      context: ./api
       dockerfile: Dockerfile
     ports:
       - "80:80"
@@ -13,7 +13,7 @@ services:
       migrate:
         condition: service_completed_successfully
     volumes:
-      - ./data/app:/app/cmd/log
+      - ./data/app:/app/api/cmd/log
 
   postgres:
     image: postgres:15
@@ -41,7 +41,7 @@ services:
       "up"
     ]
     volumes:
-      - ./migrations:/migrations
+      - ./api/migrations:/migrations
     depends_on:
       postgres:
         condition: service_healthy
